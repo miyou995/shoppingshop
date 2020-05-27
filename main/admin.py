@@ -1,10 +1,12 @@
 from django.contrib import admin
+from django.http import HttpResponse
 from .models import Produit, Checkout, Wilaya, Commune
 
-from import_export.admin import ImportExportModelAdmin
+from import_export import resources
+from import_export.admin import ExportMixin
 import csv
 import datetime
-from django.http import HttpResponse
+
 
 # def export_to_csv(modeladmin, request, queryset):
 #     opts = modeladmin.model._meta
@@ -49,13 +51,26 @@ class ProduitAdmin(admin.ModelAdmin):
 #     readonly_fields = ('date_added',)
     # actions = [export_to_csv]
 
+
+class CheckoutResource(resources.ModelResource):
+
+    class Meta:
+        model = Checkout
+        exclude = ('confirmer', )
+        fields = ('id', 'produit__name', 'prix', 'wilaya__name', 'commune__name', 'quantity', 'date_added', 'prenom_du_client', 'nom_du_client')
+        export_order = ('id', 'produit__name', 'prix', 'quantity', 'prenom_du_client', 'nom_du_client', 'wilaya__name', 'commune__name', 'date_added')
+
+
+
 @admin.register(Checkout)
-class ViewAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    list_display = ('id','produit', 'nom_du_client', 'date_added')
+class ViewAdmin(ExportMixin, admin.ModelAdmin):
+    list_display = ('id', 'produit', 'nom_du_client', 'date_added', 'wilaya', 'commune')
     list_display_links =('id','produit')
-    search_fields = ('id',)
+    search_fields = ('id', 'produit__name', 'nom_du_client', 'prenom_du_client', 'wilaya__name', 'commune__name')
+    list_filter = ('wilaya', 'date_added')
     list_per_page = 25
     readonly_fields = ('date_added',)
+    resource_class = CheckoutResource
 
 
 admin.site.register(Produit, ProduitAdmin)

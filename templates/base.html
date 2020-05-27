@@ -56,7 +56,7 @@
     <div class="container">
 
       <!-- Brand -->
-      <a class="navbar-brand waves-effect" href="" target="_blank">
+      <a class="navbar-brand waves-effect" href="{% url 'index' %}" target="_blank">
         <strong class="red-text">Shopping shop</strong>
       </a>
 
@@ -133,13 +133,34 @@
 <!-- or -->
 <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
   <!-- Initializations -->
-  <script type="text/javascript">
-    // Animations initialization
-    new WOW().init();
 
-  </script>
-  {% block script %}
-  {% endblock script %}
+ <script type="text/javascript">
+    new WOW().init();
+  $("#id_wilaya").change(function () {
+
+      var url = $("#checkoutForm").attr("data-communes-url");  // get the url of the `load_cities` view
+      var wilayaId = $(this).val();  // get the selected country ID from the HTML input
+
+      if (wilayaId == ''){
+        $("#id_commune").empty();
+      }
+
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+          'wilaya': wilayaId       // add the country id to the GET parameters
+        },
+        
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+            $("#id_commune").html(data);  // replace the contents of the city input with the data that came from the server        
+        }              
+      }); 
+  });
+
+
+</script>
+
+
 </body>
 
 </html>

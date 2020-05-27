@@ -29,7 +29,6 @@ class ProductDetailView(CreateView, DetailView):
         context = super().get_context_data(*args, **kwargs)
         context["form"] = self.get_form()
         context["wilayas"]= Wilaya.objects.all()
-        context["communes"]= Commune.objects.all()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -40,28 +39,28 @@ class ProductDetailView(CreateView, DetailView):
             checkout = form.save(commit=False)
             checkout.produit = self.get_object()
             checkout.prix = self.get_object().price
-            wilaya = form.cleaned_data.get('wilaya')
-            commune = form.cleaned_data.get('commune')
-            checkout.wilaya = wilaya
-            checkout.commune = commune
-
             checkout.save()
+           
+            wilaya = str(form.cleaned_data['wilaya'])
+            commune = str(form.cleaned_data['commune'])
+
             quantity = form.cleaned_data['quantity']
             nom_du_client = form.cleaned_data['nom_du_client']
             prenom_du_client = form.cleaned_data['prenom_du_client']
             adresse_du_client = form.cleaned_data['adresse_du_client']
 
             print(wilaya, commune)
-            try:
-                form = CheckoutCreateForm()
-                return redirect(f'/{self.get_object().pk}')
-                print('jusque la cv')
-            except:
-                return redirect('/')
+         
+            form = CheckoutCreateForm()
+            return redirect(f'/{self.get_object().pk}')
+            print('jusque la cv')
+        
+        print(form.errors)
+        return redirect(f'/{self.get_object().pk}')
         
 
-# def load_communes(request):
-#     wilaya_id = request.GET.get('wilaya')
-#     communes = Commune.objects.filter(wilaya_id=wilaya_id).order_by('name')
-#     return render(request, 'main/commune_dropdown_list_options.html', {'communes': communes})
+def load_communes(request):
+    wilaya_id = request.GET.get('wilaya')
+    communes = Commune.objects.filter(Wilaya__id=wilaya_id)
+    return render(request, 'main/commune_dropdown_list_options.html', {'communes': communes})
 
