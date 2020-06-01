@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.http import HttpResponse
-from .models import Produit, Checkout, Wilaya, Commune
+from django.urls import reverse 
+from django.utils.safestring import mark_safe
+from .models import Produit, Order, Wilaya, Commune
 
 from import_export import resources
 from import_export.admin import ExportMixin
@@ -29,7 +31,9 @@ import datetime
 #     return response
 # export_to_csv.short_descrition = 'Export to csv'
 
-
+# def order_detail(obj):
+#         url = reverse('main:admin_order_detail', args=[obj.id])
+#         return mark_safe(f'<a href="{url}">View</a>') 
 
 class ProduitAdmin(admin.ModelAdmin):
     list_display = ('id','name', 'active', 'in_stock')
@@ -43,7 +47,7 @@ class ProduitAdmin(admin.ModelAdmin):
     search_fields = ('id', 'name',)
 
 
-# class CheckoutAdmin(admin.ModelAdmin):
+# class OrderAdmin(admin.ModelAdmin):
 #     list_display = ('id','produit', 'nom_du_client', 'date_added')
 #     list_display_links =('id','produit')
 #     search_fields = ('id',)
@@ -52,25 +56,25 @@ class ProduitAdmin(admin.ModelAdmin):
     # actions = [export_to_csv]
 
 
-class CheckoutResource(resources.ModelResource):
+class OrderResource(resources.ModelResource):
 
     class Meta:
-        model = Checkout
+        model = Order
         exclude = ('confirmer', )
-        fields = ('id', 'produit__name', 'prix', 'wilaya__name', 'commune__name', 'quantity', 'date_added', 'prenom_du_client', 'nom_du_client')
-        export_order = ('id', 'produit__name', 'prix', 'quantity', 'prenom_du_client', 'nom_du_client', 'wilaya__name', 'commune__name', 'date_added')
+        fields = ('id', 'produit__name', 'prix', 'montant_total', 'wilaya__name', 'commune__name', 'quantity', 'date_added', 'prenom_du_client', 'nom_du_client')
+        export_order = ('id', 'produit__name', 'prix', 'quantity', 'montant_total', 'prenom_du_client', 'nom_du_client', 'wilaya__name', 'commune__name', 'date_added')
 
 
 
-@admin.register(Checkout)
+@admin.register(Order)
 class ViewAdmin(ExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'produit', 'nom_du_client', 'date_added', 'wilaya', 'commune')
+    list_display = ('id', 'produit', 'nom_du_client', 'date_added', 'wilaya', 'commune', 'montant_total')
     list_display_links =('id','produit')
     search_fields = ('id', 'produit__name', 'nom_du_client', 'prenom_du_client', 'wilaya__name', 'commune__name')
-    list_filter = ('wilaya', 'date_added')
+    list_filter = ('date_added', 'wilaya')
     list_per_page = 25
     readonly_fields = ('date_added',)
-    resource_class = CheckoutResource
+    resource_class = OrderResource
 
 
 admin.site.register(Produit, ProduitAdmin)

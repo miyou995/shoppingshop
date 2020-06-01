@@ -129,35 +129,16 @@
   <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
   <!-- MDB core JavaScript -->
   <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
-  <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
-<!-- or -->
-<script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+  <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+  
+    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
+  <!-- or -->
+  <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
   <!-- Initializations -->
 
  <script type="text/javascript">
     new WOW().init();
-  $("#id_wilaya").change(function () {
-
-      var url = $("#checkoutForm").attr("data-communes-url");  // get the url of the `load_cities` view
-      var wilayaId = $(this).val();  // get the selected country ID from the HTML input
-
-      if (wilayaId == ''){
-        $("#id_commune").empty();
-      }
-
-      $.ajax({                       // initialize an AJAX request
-        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
-        data: {
-          'wilaya': wilayaId       // add the country id to the GET parameters
-        },
-        
-        success: function (data) {   // `data` is the return of the `load_cities` view function
-            $("#id_commune").html(data);  // replace the contents of the city input with the data that came from the server        
-        }              
-      }); 
-  });
-
-
+ 
 </script>
 
 

@@ -1,8 +1,8 @@
 from django import forms 
-from .models import Checkout, Commune , Wilaya
-class CheckoutCreateForm(forms.ModelForm):
+from .models import Order, Commune , Wilaya
+class OrderCreateForm(forms.ModelForm):
     class Meta:
-        model = Checkout 
+        model = Order 
         fields = ['nom_du_client', 'prenom_du_client','adresse_du_client', 'quantity', 'wilaya', 'commune']
 
     def __init__(self, *args, **kwargs):
@@ -19,4 +19,3 @@ class CheckoutCreateForm(forms.ModelForm):
                 pass
         elif not 'wilaya' in self.data:
             self.fields['commune'].queryset = Commune.objects.none()
-

@@ -3,9 +3,20 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import ModelFormMixin, CreateView
 from django.urls import reverse
 
-from .models import Produit, Checkout, Wilaya, Commune
-from .forms import CheckoutCreateForm
+from .models import Produit, Order, Wilaya, Commune
+from .forms import OrderCreateForm
 from django.http import HttpResponseRedirect
+
+from  django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import get_object_or_404
+
+
+@staff_member_required
+def admin_order_detail(request, order_id):
+        order = get_object_or_404(Order, id=order_id)
+        return render(request, 'admin/main/order/detail.html', {'order': order}) 
+
+
 
 
 class ProductListView(ListView):
@@ -16,13 +27,10 @@ class ProductListView(ListView):
         context = super().get_context_data(**kwargs)
         context["produit"] = Produit.objects.all()
         return context
-        
-
-
 
 class ProductDetailView(CreateView, DetailView):
     model = Produit
-    form_class = CheckoutCreateForm
+    form_class = OrderCreateForm
     context_object_name = 'produit'
 
     def get_context_data(self, *args, **kwargs):
@@ -34,13 +42,13 @@ class ProductDetailView(CreateView, DetailView):
     def post(self, request, *args, **kwargs):
         # self.object = self.get_object()
         # form = self.get_form()
-        form = CheckoutCreateForm(request.POST)
+        form = OrderCreateForm(request.POST)
         if form.is_valid():
-            checkout = form.save(commit=False)
-            checkout.produit = self.get_object()
-            checkout.prix = self.get_object().price
-            checkout.save()
-           
+            order = form.save(commit=False)
+            order.produit = self.get_object()
+            order.price = self.get_object().price
+            
+
             wilaya = str(form.cleaned_data['wilaya'])
             commune = str(form.cleaned_data['commune'])
 
@@ -48,10 +56,24 @@ class ProductDetailView(CreateView, DetailView):
             nom_du_client = form.cleaned_data['nom_du_client']
             prenom_du_client = form.cleaned_data['prenom_du_client']
             adresse_du_client = form.cleaned_data['adresse_du_client']
+            livraison = order.cout_livraison
+
+            if wilaya == 'Alger':
+                livraison = 400
+            else:
+                livraison = 600
+
+
+            total_price = order.quantity * order.price
+            total_facture = total_price + livraison
+            order.montant_total = total_facture
+
+            
 
             print(wilaya, commune)
          
-            form = CheckoutCreateForm()
+            order.save()
+            form = OrderCreateForm()
             return redirect(f'/{self.get_object().pk}')
             print('jusque la cv')
         

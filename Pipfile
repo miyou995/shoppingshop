@@ -11,6 +11,7 @@ django = "*"
 django-tables2 = "*"
 django-import-export = "*"
 pillow = "*"
+django-debug-toolbar = "*"
 
 [requires]
 python_version = "3.8"

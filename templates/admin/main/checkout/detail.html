@@ -1,0 +1,78 @@
+{% extends "admin/base_site.html" %}
+
+{% comment %} {% block title %}
+  checkout {{ checkout.id }} {{ block.super }}
+{% endblock %} {% endcomment %}
+
+ {% comment %} {% block breadcrumbs %}
+  <div class="breadcrumbs">
+    <a href="{% url "admin:index" %}">Home</a> &rsaquo;
+    <a href="{% url "admin:checkouts_checkout_changelist" %}">checkouts</a>
+    &rsaquo;
+    <a href="{% url "admin:checkouts_checkout_change" checkout.id %}">checkout {{ checkout.id }}</a>
+    &rsaquo; Detail
+  </div>
+{% endblock %}  {% endcomment %}
+
+{% block content %}
+<h1>checkout {{ checkout.id }}</h1>
+<ul class="object-tools">
+  <li>
+    <a href="#" onclick="window.print();">Print checkout</a>
+  </li>
+</ul>
+<table>
+  <tr>
+    <th>Created</th>
+    <td>{{ checkout.date_added }}</td>
+  </tr>
+  <tr>
+    <th>Customer</th>
+    <td>{{ checkout.nom_du_client }} {{ checkout.nom_du_client }}</td>
+  </tr>
+  {% comment %} <tr>
+    <th>E-mail</th>
+    <td><a href="mailto:{{ checkout.email }}">{{ checkout.email }}</a></td>
+  </tr> {% endcomment %}
+  <tr>
+    <th>Address</th>
+    <td>{{ checkout.adresse_du_client }}, {{ checkout.wilaya }} {{ checkout.commune }}</td>
+  </tr>
+  <tr>
+    <th>Total amount</th>
+    <td>${{ checkout.montant_total }}</td>
+  </tr>
+  <tr>
+    <th>Status</th>
+    <td>{% if checkout.confirmer %}Confirmer{% else %}Non confirmer{% endif %}</td>
+  </tr>
+</table>
+
+<div class="module">
+  <h2>Items bought</h2>
+  <table style="width:100%">
+    <thead>
+      <tr>
+        <th>Produit</th>
+        <th>prix</th>
+        <th>Quantity</th>
+        <th>Livraison</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in checkout.items.all %}
+        <tr class="row{% cycle "1" "2" %}">
+          <td>{{ checkout.produit }}</td>
+          <td class="num">${{ checkout.prix }}</td>
+          <td class="num">{{ checkout.quantity }}</td>
+          <td class="num">${{ checkout.cout_livraison }}</td>
+        </tr>
+      {% endfor %}
+      <tr class="total">
+        <td colspan="3">Total</td>
+        <td class="num">${{ checkout.montant_total }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}
