@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Shopping shop octopus</title>
+  <title>OCTO shop</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
   <!-- Bootstrap core CSS -->
@@ -16,7 +16,9 @@
   <link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
   <!-- Your custom styles (optional) -->
   <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
   <style type="text/css">
+
     html,
     body,
     header,
@@ -43,7 +45,13 @@
         height: 100vh;
       }
     }
-
+    
+  img {
+    float: left;
+    width:  100%;
+    height: auto;
+    object-fit: cover;
+  }
   </style>
 </head>
 
@@ -57,7 +65,7 @@
 
       <!-- Brand -->
       <a class="navbar-brand waves-effect" href="{% url 'index' %}" target="_blank">
-        <strong class="red-text">Shopping shop</strong>
+        <strong class="red-text"><span style="color: #233774;">OCTO</span> SHOP</strong>
       </a>
 
       <!-- Collapse -->
@@ -72,7 +80,7 @@
         <!-- Left -->
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link waves-effect" href="#">Home
+            <a class="nav-link waves-effect" href="{% url 'index' %}">Home
               <span class="sr-only">(current)</span>
             </a>
           </li>
@@ -89,7 +97,7 @@
           </li>
           <li class="nav-item">
             <a href="" class="nav-link waves-effect" target="_blank">
-              <i class="fab fa-instagram"></i>
+              <i class="fab fa-instagram" style="font-size:16px;"></i>
             </a>
           </li>
           
@@ -111,9 +119,9 @@
 
 
     <!--Copyright-->
-    <div class="footer-copyright mdb-color py-3">
-      © 2020 Copyright:
-      <a href="https://octopus-consulting.com" target="_blank">octopus-consulting.com </a>
+    <div class="footer-copyright py-3">
+      © 2019 Copyright OCTO SHOP site réaliser par :
+      <a href="https://octopus-consulting.com" target="_blank"> OCTOPUS-CONSULTING </a>
     </div>
     <!--/.Copyright-->
 
@@ -123,22 +131,34 @@
   <!-- SCRIPTS -->
   <!-- JQuery -->
   <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-  <!-- Bootstrap tooltips -->
+  <!-- Bootstrap tooltips-->
   <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
-  <!-- Bootstrap core JavaScript -->
+  <!-- Bootstrap core JavaScript-->
   <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
   <!-- MDB core JavaScript -->
   <script type="text/javascript" src="{% static 'js/mdb.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/isotop.pkdg.min.js' %}"></script>
   
-    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
-  <!-- or -->
-  <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+
+
   <!-- Initializations -->
 
  <script type="text/javascript">
     new WOW().init();
- 
+     $('.portfolio-item').isotope({
+       itemSelector: '.item',
+        layoutMode: 'fitRows',
+      });
+      $('#filters .nav-item').click(function(){
+        $('#filters .nav-item').removeClass('active');
+        $(this).addClass('active');
+        var selector = $(this).attr('data-filter');
+        $('.portfolio-item').isotope({
+            filter: selector
+        });
+      });
+
 </script>
 
 

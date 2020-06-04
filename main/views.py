@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import ModelFormMixin, CreateView
@@ -5,7 +6,7 @@ from django.urls import reverse
 
 from .models import Produit, Order, Wilaya, Commune
 from .forms import OrderCreateForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 
 from  django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404
@@ -46,27 +47,31 @@ class ProductDetailView(CreateView, DetailView):
         if form.is_valid():
             order = form.save(commit=False)
             order.produit = self.get_object()
-            order.price = self.get_object().price
+            order.prix = self.get_object().price
+
             
 
+            
             wilaya = str(form.cleaned_data['wilaya'])
             commune = str(form.cleaned_data['commune'])
 
             quantity = form.cleaned_data['quantity']
-            nom_du_client = form.cleaned_data['nom_du_client']
-            prenom_du_client = form.cleaned_data['prenom_du_client']
-            adresse_du_client = form.cleaned_data['adresse_du_client']
-            livraison = order.cout_livraison
+            nom = form.cleaned_data['nom']
+            prenom = form.cleaned_data['prenom']
+            adresse = form.cleaned_data['adresse']
+            telephone = form.cleaned_data['telephone']
+            email = form.cleaned_data['email']
 
             if wilaya == 'Alger':
                 livraison = 400
             else:
                 livraison = 600
 
+            order.livraison = livraison 
 
-            total_price = order.quantity * order.price
+            total_price = order.quantity * order.prix
             total_facture = total_price + livraison
-            order.montant_total = total_facture
+            order.total = total_facture
 
             
 
@@ -75,7 +80,6 @@ class ProductDetailView(CreateView, DetailView):
             order.save()
             form = OrderCreateForm()
             return redirect(f'/{self.get_object().pk}')
-            print('jusque la cv')
         
         print(form.errors)
         return redirect(f'/{self.get_object().pk}')

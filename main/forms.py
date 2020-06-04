@@ -3,7 +3,7 @@ from .models import Order, Commune , Wilaya
 class OrderCreateForm(forms.ModelForm):
     class Meta:
         model = Order 
-        fields = ['nom_du_client', 'prenom_du_client','adresse_du_client', 'quantity', 'wilaya', 'commune']
+        fields = ['nom', 'prenom', 'adresse', 'quantity', 'wilaya', 'commune', 'email', 'telephone']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

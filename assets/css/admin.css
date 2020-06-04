@@ -1,0 +1,32 @@
+#header {
+    background-color: #fff;
+}
+#content-main caption{
+    background-color: #233774;
+}
+/* a:link,
+a:visited {
+    color: #019ef8;
+} */
+
+div.breadcrumbs{
+    background-color:rgb(0, 0, 0) ;
+}
+fieldset.module h2 {
+    background-color: #019ef8;
+} 
+.object-tools a:link, .object-tools a:visited {
+    background-color: #233774;
+}
+.object-tools a:link, .object-tools a:hover {
+    background-color: #000000;
+}
+.module h2 {
+    background-color: #000;
+}
+#header a:link, #header a:visited {
+    color: #000;
+}
+#header {
+    color: rgb(66, 66, 66);
+}
