@@ -3,14 +3,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import ModelFormMixin, CreateView
 from django.urls import reverse
+from django.http import HttpResponse
+from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 
 from .models import Produit, Order, Wilaya, Commune
 from .forms import OrderCreateForm
-from django.http import HttpResponse
-
-from  django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import get_object_or_404
-
 
 @staff_member_required
 def admin_order_detail(request, order_id):
@@ -19,15 +17,31 @@ def admin_order_detail(request, order_id):
 
 
 
-
 class ProductListView(ListView):
     template_name = 'index.html'
     model = Produit
+    
+    
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query != None:
+            produits = Produit.objects.filter(name__contains = query)
+        else:
+            produits = Produit.objects.all()
+        return produits
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["produit"] = Produit.objects.all()
         return context
+
+
+
+
+
+
+
 
 class ProductDetailView(CreateView, DetailView):
     model = Produit
@@ -49,9 +63,6 @@ class ProductDetailView(CreateView, DetailView):
             order.produit = self.get_object()
             order.prix = self.get_object().price
 
-            
-
-            
             wilaya = str(form.cleaned_data['wilaya'])
             commune = str(form.cleaned_data['commune'])
 
@@ -79,9 +90,11 @@ class ProductDetailView(CreateView, DetailView):
          
             order.save()
             form = OrderCreateForm()
+            messages.success(request, 'Votre commande a bien été éffectuer')
             return redirect(f'/{self.get_object().pk}')
         
         print(form.errors)
+        messages.error(request, "Erreur. Votre commande n'a pas été envoyer reesayer plus tard ")
         return redirect(f'/{self.get_object().pk}')
         
 
